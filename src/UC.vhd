@@ -7,7 +7,7 @@ entity UC is
 
 			instruction: in std_logic_vector (7 downto 0);
 			
-			bus_select: out std_logic_vector (2 downto 0);
+			bus_select: out std_logic_vector (2 downto 0); -- "001" para R0, "010" para R1, "011" para A, "100" para G, e "101" para Data 
 			
 			R0_Load, R1_Load, A_Load, G_Load : out std_logic;
 			
@@ -43,8 +43,6 @@ architecture bhv of UC is
 						G_Load <= '0';
 						ALU_op_code <= (others => '0');
 						
-						
-					
 					else
 						
 						bus_select <= (others => '0');
@@ -122,7 +120,7 @@ architecture bhv of UC is
 								
 							when MovData =>
 								
-								bus_select <= "111";
+								bus_select <= "101"; --DATA
 								
 								if Reg1 = "00" then
 									
@@ -134,7 +132,44 @@ architecture bhv of UC is
 								
 								end if;
 								
+								current_state <= Fetch;
 								
+							when MovReg1 =>
+							
+								bus_select <= "010"; --R1
+								
+								A_Load <= '1';
+								
+								current_state <= MovReg2;
+								
+							when MovReg2 =>
+							
+								bus_select <= "001"; --R0
+								
+								R1_Load <= '1';
+								
+								current_state <= MovReg3;
+								
+							when MovReg3 =>
+							
+								bus_select <= "011"; --A
+								
+								R0_Load <= '1';
+								
+								current_state <= Fetch;
+								
+							when	AddData1 =>
+							
+								bus_select <= "101" --DATA
+								
+								A_Load <= '1';
+								
+								current_state <= AddData2;
+								
+							when AddData2 =>
+							
+								if reg1 = "00" then 
+									
 								
 						end case;
 					end if;
