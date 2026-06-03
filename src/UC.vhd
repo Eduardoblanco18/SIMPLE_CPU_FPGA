@@ -9,23 +9,25 @@ entity UC is
 			
 			bus_select: out std_logic_vector (2 downto 0);
 			
-			R0in, R1in, Ain : out std_logic;
+			R0_Load, R1_Load, A_Load, G_Load : out std_logic;
 			
-			ALU_op_code: out std_logic_vector (1 downto 0)
+			ALU_op_code: out std_logic_vector (2 downto 0)
 			);
 	end entity UC;
 	
 architecture bhv of UC is
 	
-	type t_State is (Fetch, Decode, Execution1, Execution2, Execution3);
+	type t_State is (Fetch, Movdata, Movreg1, Movreg2, Movreg3, AddData1, AddaData2, AddaData3, AddReg1, AddReg2, AddrReg3, SubData1, SubaData2, SubData3, SubReg1, SubReg2, SubReg3, MulData1, MulData2, MulData3, MulReg1, MulReg2, MulReg3, CMPData1, CMPData2, CMPData3, CMPReg1, CMPReg2, CMPReg3, AndData1, AndData2, AndData3, AndReg1, AndReg2, AndReg3, OrData1, OrData2, OrData3, OrReg1, OrReg2, OrReg3, NotReg1, NotReg2, NotReg3);
 	
 	signal current_state : t_State;
 
 	signal OP_CODE: std_logic_vector(3 downto 0);
 	signal reg1, reg2: std_logic_vector (1 downto 0);
-	signal exec: std_logic_vector (1 downto 0);
 	
 	begin
+		OP_CODE <= instruction (7 downto 4);
+		reg1 <= instruction (3 downto 2);
+		reg2 <= instruction (1 downto 0);
 		
 		process (clock_UC)
 			begin
@@ -35,9 +37,10 @@ architecture bhv of UC is
 						current_state <= Fetch;
 						
 						bus_select <= (others => '0');
-						R0in <= '0';
-						R1in <= '0';
-						Ain <= '0';
+						R0_Load <= '0';
+						R1_Load <= '0';
+						A_Load <= '0';
+						G_Load <= '0';
 						ALU_op_code <= (others => '0');
 						
 						
@@ -45,141 +48,94 @@ architecture bhv of UC is
 					else
 						
 						bus_select <= (others => '0');
-						R0in <= '0';
-						R1in <= '0';
-						Ain <= '0';
+						R0_Load <= '0';
+						R1_Load <= '0';
+						A_Load <= '0';
+						G_Load <= '0';
 						ALU_op_code <= (others => '0');
 						
 						case current_state is
 							
 							when Fetch => 
 								
-								OP_CODE <= instruction (7 downto 4);
+								if Op_CODE = "0001" then
 								
-								reg1 <= instruction (3 downto 2);
+									current_state <= MovData;
 								
-								reg2 <= instruction (1 downto 0);
+								elsif OP_CODE = "0010" then
 								
-								current_state <= Decode;
-							
-							when Decode =>
-
-								case OP_CODE is
-									when "0000" =>
-										exec <= "00";
-									when "0001" => 
-										exec <= "01";
-									when "0010" =>
-										exec <= "10";
-									when "0011" =>
-										exec <= "11";
-									when others =>
-										exec <= "00";
-								end case;
-							
-								current_state <= execution1;		
-							
-							when Execution1 =>
+									current_state <= MovReg1;
 								
-								case exec is
-									when "01" =>
-										bus_select <= "101";
-										
-										case reg1 is
-											when "00" =>
-												R0in <= '1';
-											when "01" =>
-												R1in <= '1';
-											when others =>
-												null;
-										end case;
-										
-										current_state <= Fetch;
+								elsif OP_CODE = "0011" then
+								
+									current_state <= AddData1;
+								
+								elsif OP_CODE = "0100" then
+								
+									current_state <= AddReg1;
+								
+								elsif OP_CODE = "0101" then
+								
+									current_state <= SubData1;
+								
+								elsif OP_CODE = "0110" then
 									
-									when "10" =>
-										
-										case reg2 is
-											when "00" =>
-												bus_select <= "001";
-											when "01" =>
-												bus_select <= "010";
-											when others =>
-												null;
-										end case;
-											
-										Ain <= '1';
-										
-										current_state <= Execution2;
-									
-									when "11" =>
-										
-										case reg2 is
-											when "00" =>
-												bus_select <= "001";
-											when "01" =>
-												bus_select <= "010";
-											when others =>
-												null;
-										end case;
-										
-										Ain <= '1';
-										
-										current_state <= Execution2;
-										
-									when others =>
-										current_state <= Fetch;
-								end case;
-							
-							when Execution2 =>
+									current_state <= SubReg1;
 								
-								case exec is
-									when "10" =>
-										
-										case reg1 is
-											when "00" =>
-												bus_select <= "001";
-											when "01" =>
-												bus_select <= "010";
-											when others =>
-												null;
-										end case;
-										
-										ALU_op_code <= "01";
-										
-										current_state <= Execution3;
-									
-									when "11" =>
-										
-										case reg1 is
-											when "00" =>
-												bus_select <= "001";
-											when "01" =>
-												bus_select <= "010";
-											when others =>
-												null;
-										end case;
-										
-										ALU_op_code <= "10";
-										
-										current_state <= Execution3;
-									
-									when others =>
-										current_state <= Fetch;
-								end case;
-							
-							when Execution3 =>
-								bus_select <= "100";
+								elsif OP_CODE = "0111" then
 								
-								case reg1 is
-											when "00" =>
-												R0in <= '1';
-											when "01" =>
-												R1in <= '1';
-											when others =>
-												null;
-										end case;
+									current_state <= MulData1;
 								
-								current_state <= Fetch;
+								elsif OP_CODE = "1000" then
+								
+									current_state <= MulReg1;
+								
+								elsif OP_CODE = "1001" then
+								
+									current_state <= CMPData1;
+								
+								elsif OP_CODE = "1010" then
+								
+									current_state <= CMPReg1;
+								
+								elsif OP_CODE = "1011" then
+									
+									current_state <= AndData1;
+								
+								elsif OP_CODE = "1100" then
+									
+									current_state <= AndReg1;
+								
+								elsif OP_CODE = "1101" then
+									
+									current_state <= OrData1;
+								
+								elsif OP_CODE = "1110" then
+									
+									current_state <= OrReg1;
+								
+								elsif OP_Code = "1111" then
+									
+									current_state <= NotReg1;
+								
+								end if;
+								
+							when MovData =>
+								
+								bus_select <= "111";
+								
+								if Reg1 = "00" then
+									
+									R0_Load = '1';
+								
+								elsif Reg1 = "01" then
+									
+									R1_Load = '1';
+								
+								end if;
+								
+								
+								
 						end case;
 					end if;
 				end if;
