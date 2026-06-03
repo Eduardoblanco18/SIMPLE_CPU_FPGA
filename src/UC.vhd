@@ -17,7 +17,7 @@ entity UC is
 	
 architecture bhv of UC is
 	
-	type t_State is (Fetch, Movdata, Movreg1, Movreg2, Movreg3, AddData1, AddaData2, AddaData3, AddReg1, AddReg2, AddrReg3, SubData1, SubaData2, SubData3, SubReg1, SubReg2, SubReg3, MulData1, MulData2, MulData3, MulReg1, MulReg2, MulReg3, CMPData1, CMPData2, CMPData3, CMPReg1, CMPReg2, CMPReg3, AndData1, AndData2, AndData3, AndReg1, AndReg2, AndReg3, OrData1, OrData2, OrData3, OrReg1, OrReg2, OrReg3, NotReg1, NotReg2, NotReg3);
+	type t_State is (Fetch, Movdata, Movreg1, Movreg2, Movreg3, AddData1, AddaData2, AddaData3, AddReg1, AddReg2, AddrReg3, SubData1, SubaData2, SubData3, SubReg1, SubReg2, SubReg3, MulData1, MulData2, MulData3, MulReg1, MulReg2, MulReg3, CMPData1, CMPData2, CMPData3, CMPReg1, CMPReg2, CMPReg3, AndData1, AndData2, AndData3, AndReg1, AndReg2, AndReg3, OrData1, OrData2, OrData3, OrReg1, OrReg2, OrReg3, NotReg1, NotReg2);
 	
 	signal current_state : t_State;
 
@@ -169,7 +169,448 @@ architecture bhv of UC is
 							when AddData2 =>
 							
 								if reg1 = "00" then 
-									
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								ALU_op_code <= "100";
+								
+								G_Load <= '1';
+								
+								current_state <= AddData3;
+								
+							when AddData3 =>
+							
+								bus_select <= "100" -- G
+							
+								if reg1 = "00" then 
+									R0_Load <= '1';
+								elsif reg1 = "01" then
+									R1_Load <= '1';
+								end if
+								
+								current_state <= Fetch;
+								
+							when	AddReg1 =>
+							
+								if reg2 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								A_Load <= '1';
+								
+								current_state <= AddReg2;
+								
+							when AddReg2 =>
+							
+								if reg1 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								ALU_op_code <= "100";
+								
+								G_Load <= '1';
+								
+								current_state <= AddReg3;
+								
+							when AddReg3 =>
+							
+								bus_select <= "100" -- G
+							
+								if reg1 = "00" then 
+									R0_Load <= '1';
+								elsif reg1 = "01" then
+									R1_Load <= '1';
+								end if
+								
+								current_state <= Fetch;
+								
+							when SubData1 =>
+							
+								bus_select <= "101" --DATA
+								
+								A_Load <= '1';
+								
+								current_state <= SubData2;
+								
+							when SubData2 =>
+							
+								if reg1 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								ALU_op_code <= "101";
+								
+								G_Load <= '1';
+								
+								current_state <= SubData3;
+								
+							when SubData3 =>
+							
+								bus_select <= "100" -- G
+							
+								if reg1 = "00" then 
+									R0_Load <= '1';
+								elsif reg1 = "01" then
+									R1_Load <= '1';
+								end if
+								
+								current_state <= Fetch;
+								
+							when SubReg1 => 
+							
+								if reg2 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								A_Load <= '1';
+								
+								current_state <= SubReg2;
+								
+							when SubReg2 =>
+							
+								if reg1 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								ALU_op_code <= "101";
+								
+								G_Load <= '1';
+								
+								current_state <= SubReg3;
+								
+							when SubReg3 =>
+							
+								bus_select <= "100" -- G
+							
+								if reg1 = "00" then 
+									R0_Load <= '1';
+								elsif reg1 = "01" then
+									R1_Load <= '1';
+								end if
+								
+								current_state <= Fetch;
+								
+							when MulData1 =>
+							
+								bus_select <= "101" --DATA
+								
+								A_Load <= '1';
+								
+								current_state <= MulData2;
+								
+							when MulData2 =>
+							
+								if reg1 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								ALU_op_code <= "110";
+								
+								G_Load <= '1';
+								
+								current_state <= MulData3;
+								
+							when MulData3 =>
+							
+								bus_select <= "100" -- G
+							
+								if reg1 = "00" then 
+									R0_Load <= '1';
+								elsif reg1 = "01" then
+									R1_Load <= '1';
+								end if
+								
+								current_state <= Fetch;
+								
+							when MulReg1 => 
+							
+								if reg2 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								A_Load <= '1';
+								
+								current_state <= MulReg2;
+								
+							when MulReg2 =>
+							
+								if reg1 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								ALU_op_code <= "110";
+								
+								G_Load <= '1';
+								
+								current_state <= MulReg3;
+								
+							when MulReg3 =>
+							
+								bus_select <= "100" -- G
+							
+								if reg1 = "00" then 
+									R0_Load <= '1';
+								elsif reg1 = "01" then
+									R1_Load <= '1';
+								end if
+								
+								current_state <= Fetch;
+								
+							when CMPData1 =>
+							
+								bus_select <= "101" --DATA
+								
+								A_Load <= '1';
+								
+								current_state <= CMPData2;
+								
+							when CMPData2 =>
+							
+								if reg1 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								ALU_op_code <= "111";
+								
+								G_Load <= '1';
+								
+								current_state <= CMPData3;
+								
+							when CMPData3 =>
+							
+								bus_select <= "100" -- G
+							
+								if reg1 = "00" then 
+									R0_Load <= '1';
+								elsif reg1 = "01" then
+									R1_Load <= '1';
+								end if
+								
+								current_state <= Fetch;
+								
+							when CMPReg1 => 
+							
+								if reg2 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								A_Load <= '1';
+								
+								current_state <= CMPReg2;
+								
+							when CMPReg2 =>
+							
+								if reg1 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								ALU_op_code <= "111";
+								
+								G_Load <= '1';
+								
+								current_state <= CMPReg3;
+								
+							when CMPReg3 =>
+							
+								bus_select <= "100" -- G
+							
+								if reg1 = "00" then 
+									R0_Load <= '1';
+								elsif reg1 = "01" then
+									R1_Load <= '1';
+								end if
+								
+								current_state <= Fetch;
+								
+							when AndData1 =>
+							
+								bus_select <= "101" --DATA
+								
+								A_Load <= '1';
+								
+								current_state <= AndData2;
+								
+							when AndData2 =>
+							
+								if reg1 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								ALU_op_code <= "001";
+								
+								G_Load <= '1';
+								
+								current_state <= AndData3;
+								
+							when AndData3 =>
+							
+								bus_select <= "100" -- G
+							
+								if reg1 = "00" then 
+									R0_Load <= '1';
+								elsif reg1 = "01" then
+									R1_Load <= '1';
+								end if
+								
+								current_state <= Fetch;
+								
+							when AndReg1 => 
+							
+								if reg2 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								A_Load <= '1';
+								
+								current_state <= AndReg2;
+								
+							when AndReg2 =>
+							
+								if reg1 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								ALU_op_code <= "001";
+								
+								G_Load <= '1';
+								
+								current_state <= AndReg3;
+								
+							when AndReg3 =>
+							
+								bus_select <= "100" -- G
+							
+								if reg1 = "00" then 
+									R0_Load <= '1';
+								elsif reg1 = "01" then
+									R1_Load <= '1';
+								end if
+								
+								current_state <= Fetch;
+								
+							when OrData1 =>
+							
+								bus_select <= "101" --DATA
+								
+								A_Load <= '1';
+								
+								current_state <= OrData2;
+								
+							when OrData2 =>
+							
+								if reg1 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								ALU_op_code <= "010";
+								
+								G_Load <= '1';
+								
+								current_state <= OrData3;
+								
+							when OrData3 =>
+							
+								bus_select <= "100" -- G
+							
+								if reg1 = "00" then 
+									R0_Load <= '1';
+								elsif reg1 = "01" then
+									R1_Load <= '1';
+								end if
+								
+								current_state <= Fetch;
+								
+							when OrReg1 => 
+							
+								if reg2 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								A_Load <= '1';
+								
+								current_state <= OrReg2;
+								
+							when OrReg2 =>
+							
+								if reg1 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								ALU_op_code <= "010";
+								
+								G_Load <= '1';
+								
+								current_state <= OrReg3;
+								
+							when OrReg3 =>
+							
+								bus_select <= "100" -- G
+							
+								if reg1 = "00" then 
+									R0_Load <= '1';
+								elsif reg1 = "01" then
+									R1_Load <= '1';
+								end if
+								
+								current_state <= Fetch;
+								
+							when NotReg1 =>
+								
+								if reg1 = "00" then 
+									bus_select <= "001" --R0;
+								elsif reg1 = "01" then
+									bus_select <= "010" --R1;
+								end if
+								
+								ALU_op_code <= "011";
+								
+								G_Load <= '1';
+								
+								current_state <= NotReg2;
+								
+							when NotReg2 =>
+							
+								if reg1 = "00" then 
+									R0_Load <= '1';
+								elsif reg1 = "01" then
+									R1_Load <= '1';
+								end if
 								
 						end case;
 					end if;
