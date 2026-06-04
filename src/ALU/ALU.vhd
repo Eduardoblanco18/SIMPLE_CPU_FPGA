@@ -24,6 +24,8 @@ architecture BHV_ALU of ALU is
 	signal SOMA_RES, SUB_RES, MUL_RES, AND_RES, OR_RES, NOT_RES: std_logic_vector (3 downto 0);
 	signal SOMA_OF, SUB_OF, SOMA_CF, SUB_CF: std_logic;
 	
+	signal Not_num_b: std_logic_vector (3 downto 0);
+	
 		begin
 			
 			Num_A <= "0000" when OP_CODE = "000" else 
@@ -32,10 +34,12 @@ architecture BHV_ALU of ALU is
 			Num_B <= "0000" when OP_CODE = "000" else 
 						"00" & Reg_A(1 downto 0) when OP_CODE = "110" else
 						Reg_A;
+						
+			not_num_b <= not Num_B;
 			
 			SOMADOR: adder_4_bits port map (a => Num_A, b => Num_B, cin => '0', soma => SOMA_RES, cout => SOMA_CF, overflow => SOMA_OF);
 			
-			SUBTRATOR: adder_4_bits port map (a => Num_A, b => NOT Num_B, cin => '1', soma => SUB_RES, cout => SUB_CF, overflow => SUB_OF);
+			SUBTRATOR: adder_4_bits port map (a => Num_A, b => not_num_b, cin => '1', soma => SUB_RES, cout => SUB_CF, overflow => SUB_OF);
 			
 			MULTIPLICADOR: multiplier_2_bits port map (a => Num_A (1 downto 0), b => Num_B (1 downto 0), Res => MUL_RES);
 		

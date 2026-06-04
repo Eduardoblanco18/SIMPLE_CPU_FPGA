@@ -10,13 +10,13 @@ entity CPU is
 			
 			LEDR: out std_logic_vector (5 downto 0);
 			
-			HEx0: out std_logic_vector (6 downto 0);
+			HEX0: out std_logic_vector (6 downto 0);
 			
-			HEx2: out std_logic_vector (6 downto 0);
-			--HEx3: out std_logic_vector (6 downto 0);
+			HEX2: out std_logic_vector (6 downto 0);
+			--HEX3: out std_logic_vector (6 downto 0);
 			
-			HEx4: out std_logic_vector (6 downto 0)
-			--HEx5: out std_logic_vector (6 downto 0)
+			HEX4: out std_logic_vector (6 downto 0)
+			--HEX5: out std_logic_vector (6 downto 0)
 			);
 	end entity;
 	

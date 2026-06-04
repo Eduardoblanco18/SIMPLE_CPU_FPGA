@@ -115,6 +115,10 @@ architecture bhv of UC is
 								elsif OP_Code = "1111" then
 									
 									current_state <= NotReg1;
+									
+								else 
+								
+									current_state <= Fetch;
 								
 								end if;
 								
@@ -202,7 +206,7 @@ architecture bhv of UC is
 									
 									bus_select <= "001"; --R0
 								
-								elsif reg1 = "01" then
+								elsif reg2 = "01" then
 									
 									bus_select <= "010"; --R1
 								
@@ -284,7 +288,7 @@ architecture bhv of UC is
 							
 								if reg2 = "00" then 
 									bus_select <= "001"; --R0;
-								elsif reg1 = "01" then
+								elsif reg2 = "01" then
 									bus_select <= "010"; --R1;
 								end if;
 								
@@ -346,7 +350,7 @@ architecture bhv of UC is
 							
 								if reg1 = "00" then 
 									R0_Load <= '1';
-								elsif reg1 = "01" then
+								elsif reg2 = "01" then
 									R1_Load <= '1';
 								end if;
 								
@@ -408,27 +412,13 @@ architecture bhv of UC is
 								
 								ALU_op_code <= "111";
 								
-								G_Load <= '1';
-								
-								current_state <= CMPData3;
-								
-							when CMPData3 =>
-							
-								bus_select <= "100"; -- G
-							
-								if reg1 = "00" then 
-									R0_Load <= '1';
-								elsif reg1 = "01" then
-									R1_Load <= '1';
-								end if;
-								
 								current_state <= Fetch;
 								
 							when CMPReg1 => 
 							
 								if reg2 = "00" then 
 									bus_select <= "001"; --R0;
-								elsif reg1 = "01" then
+								elsif reg2 = "01" then
 									bus_select <= "010"; --R1;
 								end if;
 								
@@ -445,22 +435,9 @@ architecture bhv of UC is
 								end if;
 								
 								ALU_op_code <= "111";
+
 								
-								G_Load <= '1';
-								
-								current_state <= CMPReg3;
-								
-							when CMPReg3 =>
-							
-								bus_select <= "100"; -- G
-							
-								if reg1 = "00" then 
-									R0_Load <= '1';
-								elsif reg1 = "01" then
-									R1_Load <= '1';
-								end if;
-								
-								current_state <= Fetch;
+								current_state <=  Fetch;
 								
 							when AndData1 =>
 							
@@ -500,7 +477,7 @@ architecture bhv of UC is
 							
 								if reg2 = "00" then 
 									bus_select <= "001"; --R0;
-								elsif reg1 = "01" then
+								elsif reg2 = "01" then
 									bus_select <= "010"; --R1;
 								end if;
 								
@@ -572,7 +549,7 @@ architecture bhv of UC is
 							
 								if reg2 = "00" then 
 									bus_select <= "001"; --R0;
-								elsif reg1 = "01" then
+								elsif reg2 = "01" then
 									bus_select <= "010"; --R1;
 								end if;
 								
@@ -627,6 +604,12 @@ architecture bhv of UC is
 								elsif reg1 = "01" then
 									R1_Load <= '1';
 								end if;
+								
+								current_state <= Fetch;
+								
+							when others =>
+							
+								current_state <= Fetch;
 								
 						end case;
 					end if;
