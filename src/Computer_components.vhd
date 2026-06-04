@@ -14,13 +14,13 @@ package Computer_components is
 	
 	component UC is
 		port (
-			clock_UC, reset_UC : in  std_logic;
+			clock_UC, reset_UC, Saved_IR : in  std_logic;
 
 			instruction: in std_logic_vector (7 downto 0);
 			
 			bus_select: out std_logic_vector (2 downto 0); -- "001" para R0, "010" para R1, "011" para A, "100" para G, e "101" para Data 
 			
-			R0_Load, R1_Load, A_Load, G_Load : out std_logic;
+			R0_Load, R1_Load, A_Load, G_Load: out std_logic;
 			
 			ALU_op_code: out std_logic_vector (2 downto 0)
 			);

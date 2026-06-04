@@ -3,13 +3,13 @@ use ieee.std_logic_1164.all;
 
 entity UC is
 	port (
-			clock_UC, reset_UC : in  std_logic;
+			clock_UC, reset_UC, Saved_IR : in  std_logic;
 
 			instruction: in std_logic_vector (7 downto 0);
 			
 			bus_select: out std_logic_vector (2 downto 0); -- "001" para R0, "010" para R1, "011" para A, "100" para G, e "101" para Data 
 			
-			R0_Load, R1_Load, A_Load, G_Load : out std_logic;
+			R0_Load, R1_Load, A_Load, G_Load: out std_logic;
 			
 			ALU_op_code: out std_logic_vector (2 downto 0)
 			);
@@ -17,7 +17,7 @@ entity UC is
 	
 architecture bhv of UC is
 	
-	type t_State is (Fetch, Movdata, Movreg1, Movreg2, Movreg3, AddData1, AddData2, AddData3, AddReg1, AddReg2, AddReg3, SubData1, SubData2, SubData3, SubReg1, SubReg2, SubReg3, MulData1, MulData2, MulData3, MulReg1, MulReg2, MulReg3, CMPData1, CMPData2, CMPData3, CMPReg1, CMPReg2, CMPReg3, AndData1, AndData2, AndData3, AndReg1, AndReg2, AndReg3, OrData1, OrData2, OrData3, OrReg1, OrReg2, OrReg3, NotReg1, NotReg2);
+	type t_State is (Fetch, Decode, Movdata, Movreg1, Movreg2, Movreg3, AddData1, AddData2, AddData3, AddReg1, AddReg2, AddReg3, SubData1, SubData2, SubData3, SubReg1, SubReg2, SubReg3, MulData1, MulData2, MulData3, MulReg1, MulReg2, MulReg3, CMPData1, CMPData2, CMPData3, CMPReg1, CMPReg2, CMPReg3, AndData1, AndData2, AndData3, AndReg1, AndReg2, AndReg3, OrData1, OrData2, OrData3, OrReg1, OrReg2, OrReg3, NotReg1, NotReg2);
 	
 	signal current_state : t_State;
 
@@ -53,8 +53,19 @@ architecture bhv of UC is
 						ALU_op_code <= (others => '0');
 						
 						case current_state is
+						
+							when Fetch =>
+								if Saved_IR = '1' then
+									
+									current_state <= Decode;
+									
+								else 
+									
+									current_state <= Fetch;
+									
+								end if;
 							
-							when Fetch => 
+							when Decode => 
 								
 								if Op_CODE = "0001" then
 								

@@ -6,7 +6,7 @@ entity CPU is
 	port (
 			CLOCK_50: in std_logic;
 			SW: in std_logic_vector (11 downto 0);
-			KEY: in std_logic_vector (0 downto 0);
+			KEY: in std_logic_vector (1 downto 0);
 			
 			LEDR: out std_logic_vector (5 downto 0);
 			
@@ -21,10 +21,13 @@ entity CPU is
 	end entity;
 	
 architecture BHV of CPU is
-	signal Instruc: std_logic_vector (7 downto 0);
+	signal Instruc, IR: std_logic_vector (7 downto 0);
 	
 	signal OP_CODE_ALU: std_logic_vector (2 downto 0);
 	signal Load_R0, Load_R1, Load_A, Load_G: std_logic;
+	
+	signal Load_IR: std_logic;
+	signal Loaded_IR, Execute_pulse : std_logic:= '0';
 	
 	signal DATA, Reg0, Reg1, A, G, Barramento, ALU_Res: std_logic_vector (3 downto 0);
 	signal select_bus: std_logic_vector (2 downto 0);
@@ -38,8 +41,29 @@ architecture BHV of CPU is
 		instruc <= SW(7 downto 0);
 		DATA <= SW(11 downto 8);
 		TOTAL_RESET <= NOT KEY(0);
+		Load_IR <= NOT KEY(1);
 		
-		Control_unity: UC port map (clock_uc => CLOCK_50, Reset_UC => TOTAL_RESET, instruction => Instruc, bus_select => select_bus, R0_Load => Load_R0, R1_Load => Load_R1, A_Load => Load_A, G_Load => Load_G, ALU_op_code => OP_CODE_ALU);
+		Instruction_Register: N_Register generic map (n => 8) port map(clock_reg => CLOCK_50, reset_reg => TOTAL_RESET, Load_reg => Load_IR, Data_in => instruc, Data_out => IR); 
+		
+		process(CLOCK_50)
+			begin
+				
+				if rising_edge(CLOCK_50) then
+				
+					Execute_pulse <= '0';
+					
+					if Loaded_IR = '0'and LOad_IR = '1' then
+						
+						Execute_pulse <= '1';
+						
+					end if;
+					
+					Loaded_IR <= Load_IR;
+					
+				end if;
+			end process;
+		
+		Control_unity: UC port map (clock_uc => CLOCK_50, Reset_UC => TOTAL_RESET, Saved_IR => Execute_pulse, instruction => IR, bus_select => select_bus, R0_Load => Load_R0, R1_Load => Load_R1, A_Load => Load_A, G_Load => Load_G, ALU_op_code => OP_CODE_ALU);
 		
 		with Select_bus select
 			Barramento <=
