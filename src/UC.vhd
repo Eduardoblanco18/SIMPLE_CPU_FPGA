@@ -612,6 +612,8 @@ architecture bhv of UC is
 						
 					when NotReg2 =>
 					
+						bus_select <= "100"; --G
+					
 						if reg1 = "00" then 
 							R0_Load <= '1';
 						elsif reg1 = "01" then
