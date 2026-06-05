@@ -11,7 +11,7 @@ entity N_Register is
 	end entity N_Register;
 	
 architecture bhv of N_Register is
-	signal Reg : std_logic_vector (n-1 downto 0);
+	signal Reg : std_logic_vector (n-1 downto 0) := (others => '0');
 	begin 
 		process(clock_reg)
 			begin 
