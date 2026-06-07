@@ -1,9 +1,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-package Computer_components is
+package Computer_components is  --Package geral com todos os components
 	
-	component N_Register is
+	component N_Register is --Component dos Registradores
 		generic (n: integer :=4);
 		port (
 				clock_reg, reset_reg, load_reg: in std_logic;
@@ -12,7 +12,7 @@ package Computer_components is
 				);
 		end component N_Register;
 	
-	component UC is
+	component UC is -- Component da Unidade de Controle
 		port (
 			clock_UC, reset_UC, Saved_IR : in  std_logic;
 
@@ -26,7 +26,7 @@ package Computer_components is
 			);
 		end component UC;
 
-	component ALU is
+	component ALU is -- Component da ULA
 		port (
 				OP_CODE: in std_logic_vector (2 downto 0);
 				Reg, Reg_A: in std_logic_vector (3 downto 0);

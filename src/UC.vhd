@@ -2,7 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 entity UC is
-	port (
+	port ( --entradas da entitade
 			clock_UC, reset_UC, Saved_IR : in  std_logic;
 
 			instruction: in std_logic_vector (7 downto 0);
@@ -19,17 +19,17 @@ architecture bhv of UC is
 	
 	type t_State is (Fetch, Decode, Movdata, Movreg1, Movreg2, Movreg3, AddData1, AddData2, AddData3, AddReg1, AddReg2, AddReg3, SubData1, SubData2, SubData3, SubReg1, SubReg2, SubReg3, MulData1, MulData2, MulData3, MulReg1, MulReg2, MulReg3, CMPData1, CMPData2, CMPReg1, CMPReg2, AndData1, AndData2, AndData3, AndReg1, AndReg2, AndReg3, OrData1, OrData2, OrData3, OrReg1, OrReg2, OrReg3, NotReg1, NotReg2);
 	
-	signal current_state, next_state : t_State;
+	signal current_state, next_state : t_State; --estado atual e proximo estado
 
-	signal OP_CODE: std_logic_vector(3 downto 0);
-	signal reg1, reg2: std_logic_vector (1 downto 0);
+	signal OP_CODE: std_logic_vector(3 downto 0); --OP_CODE da operação
+	signal reg1, reg2: std_logic_vector (1 downto 0); --registradores da operação
 	
 	begin
-		OP_CODE <= instruction (7 downto 4);
+		OP_CODE <= instruction (7 downto 4); 
 		reg1 <= instruction (3 downto 2);
 		reg2 <= instruction (1 downto 0);
 		
-		process (clock_UC, reset_UC)
+		process (clock_UC, reset_UC) --muda o estado atual para o proximo
 			begin
 				if reset_UC = '1' then
 				
@@ -42,9 +42,9 @@ architecture bhv of UC is
 				end if;
 			end process;
 			
-		process (all)
+		process (all) -- define qual eh o próximo estado
 			begin
-			
+				--zero todas as saídas (saídas deafult)
 				next_state <= current_state;
 			
 				bus_select <= (others => '0');
@@ -55,8 +55,8 @@ architecture bhv of UC is
 				ALU_op_code <= (others => '0');
 				
 				case current_state is
-				
-					when Fetch =>
+					
+					when Fetch => --no estado Fetch, só sai dele quando Execute_pulse = '1'
 						if Saved_IR = '1' then
 							
 							next_state <= Decode;
@@ -67,7 +67,7 @@ architecture bhv of UC is
 							
 						end if;
 					
-					when Decode => 
+					when Decode => -- a partir do OP_CODE da instruição define qual eh o próximo estado
 						
 						if Op_CODE = "0001" then
 						

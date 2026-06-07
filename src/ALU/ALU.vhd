@@ -95,8 +95,8 @@ architecture BHV_ALU of ALU is
 						  '0' when others;
 							  
 			Flags(2) <= OFW;	-- direcionamento do sinal da overflow flag para seu respectivo led
-			Flags(1) <= '0' when OP_CODE = "000" OR OP_CODE = "111" else ZF;  -- direcionamento do sinal da zero flag para seu respectivo led e seleção da representação do zaero flag no led de acordo com a escolha de código operacional
-			Flags(0) <= CF;		-- direcionamento do sinal da carry flag para seu respectivo led			
+			Flags(1) <= CF;		-- direcionamento do sinal da carry flag para seu respectivo led	
+			Flags(0) <= '0' when OP_CODE = "000" OR OP_CODE = "111" else ZF;  -- direcionamento do sinal da zero flag para seu respectivo led e seleção da representação do zaero flag no led de acordo com a escolha de código operacional		
 			
 			Result <= Inner_Result;
 			
