@@ -36,4 +36,20 @@ package Computer_components is  --Package geral com todos os components
 				);
 		end component ALU;
 		
+	component Debouncer is
+		port (
+				Clock_in: in std_logic;
+				reset_in: in std_logic;
+				Load_in: in std_logic;
+				Clean_Load: out std_logic
+				);
+		end component Debouncer;
+		
+	component DisplayDecoder is
+		port (
+				hex_in: in std_logic_vector(3 downto 0);
+				display: out std_logic_vector (6 downto 0)
+				);
+		end component DisplayDecoder;
+		
 	end package;
